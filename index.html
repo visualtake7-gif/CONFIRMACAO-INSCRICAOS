@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Comprovante de Inscrição</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family: "Inter","Segoe UI",Arial,sans-serif;
+  background:linear-gradient(135deg,#0f3d1f,#0e7c43);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.card{
+  width:100%;
+  max-width:360px;
+  background:#ffffff;
+  border-radius:18px;
+  padding:22px;
+  text-align:center;
+  box-shadow:0 25px 60px rgba(0,0,0,.35);
+}
+
+.top{
+  font-weight:800;
+  color:#065f46;
+  letter-spacing:.4px;
+}
+
+h2{
+  margin:8px 0 6px;
+  color:#0f172a;
+}
+
+.info{
+  margin-top:10px;
+  font-size:14px;
+  color:#334155;
+}
+
+#qrcode{
+  margin:18px 0;
+  display:flex;
+  justify-content:center;
+}
+
+.idbox{
+  margin-top:10px;
+  font-size:13px;
+  color:#475569;
+}
+
+.footer{
+  margin-top:12px;
+  font-size:12px;
+  color:#64748b;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <div class="top">Sistema de Inscrição • UAADEM</div>
+  <h2>Comprovante</h2>
+
+  <div class="info">
+    Apresente este QR Code na entrada do evento.
+  </div>
+
+ <div id="qrcode"></div>
+
+<div id="dados" class="idbox"></div>
+
+<div class="idbox">
+  Código da inscrição:<br>
+  <strong id="codigo"></strong>
+</div>
+
+  <div class="footer">
+    Validação feita pelo leitor oficial
+  </div>
+
+</div>
+
+
+<script>
+
+const webAppURL = "https://script.google.com/macros/s/AKfycbxM0yPVLY6et5SliwIs91RO081zgR7UM4duCsRdTg3G6FLlIVMDmQ-4ws7vgJpvLWsj/exec";
+
+const params = new URLSearchParams(window.location.search);
+let id = params.get("id");
+
+if(!id){
+  id = prompt("Digite o código da inscrição:");
+}
+
+if(!id){
+  alert("Nenhum ID informado.");
+  throw new Error("Sem ID");
+}
+
+document.getElementById("codigo").innerText = id;
+
+/* 1️⃣ GERA O QRCODE (continua só com o ID) */
+const urlLeitor = "https://visualtake7-gif.github.io/CONFIRMACAO-INSCRICAO/";
+const conteudo = urlLeitor + "?id=" + encodeURIComponent(id);
+
+new QRCode(document.getElementById("qrcode"), {
+  text: conteudo,
+  width: 200,
+  height: 200
+});
+
+
+/* 2️⃣ AGORA busca os dados para montar o comprovante */
+
+fetch(webAppURL + "?id=" + encodeURIComponent(id) + "&modo=dados")
+  .then(r => r.json())
+  .then(d => {
+
+    if(!d || !d.nome){
+      document.getElementById("dados").innerHTML =
+        "<b>Inscrição não encontrada.</b>";
+      return;
+    }
+
+    document.getElementById("dados").innerHTML = `
+      <b>Nome:</b> ${d.nome}<br>
+      <b>Telefone:</b> ${d.telefone}<br>
+      <b>E-mail:</b> ${d.email}<br>
+      <b>Congregação:</b> ${d.congregacao}<br>
+      <b>Grupo:</b> ${d.grupo}<br>
+      <b>Área:</b> ${d.area}
+    `;
+  })
+  .catch(() => {
+    document.getElementById("dados").innerHTML =
+      "<b>Erro ao buscar dados da inscrição.</b>";
+  });
+
+</script>
+</body>
+</html>
