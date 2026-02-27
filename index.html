@@ -5,6 +5,7 @@
 <title>Comprovante de Inscrição</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
 body{
@@ -104,27 +105,54 @@ h2{
     font-size: 24px;
   }
 }
+.btn-salvar{
+  margin-top:14px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#0e7c43;
+  color:#fff;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.btn-salvar:hover{
+  background:#065f46;
+  transform:scale(1.02);
+}
+#comprovante{
+  border: 3px solid #0e7c43;
+  border-radius: 18px;
+
+  padding: 28px;   /* 👈 AUMENTA O RESPIRO */
+  box-sizing: border-box;
+  background: #fff;
+}
 </style>
 </head>
 <body>
 
 <div class="card">
-
+<div id="comprovante">
   <div class="top">UAADEM</div>
   <h2>Comprovante</h2>
 
   <div class="info">
     Apresente este QR Code na entrada do evento.
   </div>
-
  <div id="qrcode"></div>
-
 <div id="dados" class="idbox"></div>
-
 <div class="idbox">
   Código da inscrição:<br>
   <strong id="codigo"></strong>
 </div>
+</div>
+<button class="btn-salvar" onclick="salvarComprovanteImagem()">
+💾 Salvar comprovante
+</button>
 
   <div class="footer">
     Validação feita pelo leitor oficial
@@ -187,7 +215,20 @@ fetch(webAppURL + "?id=" + encodeURIComponent(id) + "&modo=dados")
     document.getElementById("dados").innerHTML =
       "<b>Erro ao buscar dados da inscrição.</b>";
   });
+   function salvarComprovanteImagem(){
 
+  const comprovante = document.getElementById("comprovante");
+
+  html2canvas(comprovante, { scale: 2 }).then(canvas => {
+
+    const link = document.createElement("a");
+    link.download = "comprovante-inscricao.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+
+  });
+
+}
 </script>
 </body>
 </html>
