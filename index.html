@@ -61,6 +61,46 @@ h2{
   font-size:12px;
   color:#64748b;
 }
+.idbox{
+  border: 2px solid #000;
+  padding: 12px 16px;
+  margin-top: 12px;
+  border-radius: 8px;
+  font-size: 20px;   /* tamanho base */
+  line-height: 1.5;
+}
+
+#dados{
+  font-size: 15px;   /* dados maiores */
+  font-weight: 500;
+  text-align: left;
+}
+
+#codigo{
+  font-size: 25px;   /* código bem grande */
+  font-weight: bold;
+  color: #000;
+  letter-spacing: 2px;
+}
+
+#qrcode{
+  margin-top: 15px;
+}
+
+/* opcional: deixa o QR e os dados com cara de comprovante */
+@media print{
+  body{
+    font-size: 18px;
+  }
+
+  #codigo{
+    font-size: 40px;
+  }
+
+  #dados{
+    font-size: 24px;
+  }
+}
 </style>
 </head>
 <body>
