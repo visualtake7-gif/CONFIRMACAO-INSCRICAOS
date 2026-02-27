@@ -6,7 +6,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <style>
 body{
@@ -216,36 +215,19 @@ fetch(webAppURL + "?id=" + encodeURIComponent(id) + "&modo=dados")
     document.getElementById("dados").innerHTML =
       "<b>Erro ao buscar dados da inscrição.</b>";
   });
-   async function salvarImagem(){
+   function salvarComprovanteImagem(){
 
   const comprovante = document.getElementById("comprovante");
 
-  const canvas = await html2canvas(comprovante, {
-    scale: 2,
-    backgroundColor: "#ffffff"
-  });
+  html2canvas(comprovante, { scale: 2 }).then(canvas => {
 
-  const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
-
-  const file = new File([blob], "comprovante.png", { type: "image/png" });
-
-  // 👉 iPhone / Safari moderno
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
-
-    await navigator.share({
-      files: [file],
-      title: "Comprovante de inscrição"
-    });
-
-  } else {
-
-    // fallback (PC / Android / navegadores antigos)
     const link = document.createElement("a");
+    link.download = "comprovante-inscricao.png";
     link.href = canvas.toDataURL("image/png");
-    link.download = "comprovante.png";
     link.click();
 
-  }
+  });
+
 }
 </script>
 </body>
